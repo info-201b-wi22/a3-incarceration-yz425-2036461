@@ -2,7 +2,9 @@
 title: "A3: Incarceration"
 output: html_document
 ---
-
+##### Yunjing Zhang
+##### 2036461
+##### 2/25/2022
 ### Introduction
 
 The incarceration rate in the U.S. has always been an important topic. The institution Vera Institute collected and presented a data set that provides some insights of the problem. Since the data set include multiple information like gender and race of the prisoners all over the U.S. from 1970 to 2018, the main problem domain I want to analyze in this data set is centered around the relationship between sates, population in jail, race and total population. The main questions I asked are how does the total population varies through year in different states, how does the rate of population in prison of different race correlates with the total population in prison, and what the jail population in each state is like in 2010?
@@ -33,7 +35,7 @@ The main variables I chose to analyze are:
 ``````{r inclue= FALSE, echo = FALSE, warning = FALSE, message = FALSE, code = readLines("summary.R")}
 ```
 
-The data includes columns like total population, total female population, total male population, etc. There are five values that might be valuable in analyzing the data set. First, across all years and counties, the average value of the total populations across counties is  `r avg_total_pop`. When, analyzing specifically King County, there are also some valuable numbers. In the year `r King_highest_female_pop_yr`, King county has the highest number of female aged from 15 to 64. In the year `r King_highest_male_pop_yr`, King county has the highest number of male aged from 15 to 64. In 2018, among all the counties, `r Lowest_jail_pop_2018` are found to have the lowest jail population. Also, it is found that in 2018, `r Highest_jail_pop_2018` has the highest jail population.
+The data includes columns like total population, total female population, total male population, etc. There are five values that might be valuable in analyzing the data set. First, across all years and counties, the average value of the total populations across counties is  `r avg_total_pop`. When analyzing specifically King County, there are also some valuable numbers. In the year `r King_highest_female_pop_yr`, King county has the highest number of female aged from 15 to 64. In the year `r King_highest_male_pop_yr`, King county has the highest number of male aged from 15 to 64. In 2018, among all the counties, `r Lowest_jail_pop_2018` are found to have the lowest jail population. Also, it is found that in 2018, `r Highest_jail_pop_2018` has the highest jail population.
 
 
 ### The Dataset
@@ -41,6 +43,7 @@ The data includes columns like total population, total female population, total 
 The data was collected by the U.S. Department of Justice Bureau of Justice Statistics (BJS) and supplemented with data from state departments of correction. The data was collected by the NCRP, ASJ, COJ, and DCRP through recording the detailed individual-level data on admissions and releases from state prison authorities, including county of commitment. The data was collected because they want to have a detailed understanding of the prison related variables and use the data to generate a visualization. There are 153811 rows in total and 121 columns in total. The ethical question might be about data privacy. When dealing with the dataset, we should avoid analyzing the data by each row because that might reveal the information of certain prisoners. There are also multiple limitations in this data set. The first possible limitation is that since the data set combines data from different sources, their method of collecting data might be different, which might cause the datas to be in different format. If the data is not well analyzed and cleaned, the data set might contain inaccurate data. Also, the NAs in the data set make many rows not applicable, which will make it harder for people to compare in the data set.
 
 ### Trends Over Time Chart
+
 
 ``````{r chart1, echo = FALSE, warning = FALSE, message = FALSE}
 five_states <-summarize(group_by(raw.data, state, year, total_pop)) %>% 
@@ -59,6 +62,7 @@ ggplot(five_states) +
 This chart shows how the total population of states like "CA", "MA", "NY", "TX", and "WA" varies from 1970 to 2018. These states are chosen since they are the states I traveled to on my first trip to the U.S. I used line chart for this one because it could show how the population varies through year and the comparison between each state clearly. Each line represents the change of total population in a state and has different colors to make it clearer. It's obvious that "CA", "TX", and "WA" show a clear pattern of increase in the total population, while the line of "NY" and "MA" are relatively flat, showing that the total population of those states does not increase much. The possible reason of this situation is that "NY" and "MA" has relatively large population base so there's not enough room for population increase, while other states are still developing and have relatively large potention for population to increase.
 
 ### Variable Comparison Chart
+
 
 ``````{r chart2, echo = FALSE, warning = FALSE, message = FALSE}
 jail_pop_data <- summarize(group_by(raw.data, county_name, year, white_prison_pop_rate, black_prison_pop_rate, latinx_prison_pop_rate, total_prison_pop)) %>% 
@@ -88,6 +92,7 @@ ggarrange(white_prison_rate, black_prison_rate, latinx_prison_rate + rremove("x.
 What I include in this graph is the correlation between white prison population rate and total prison population, black prison population rate and total prison population, and latinx prison population rate and total prison population in 2015. I used scatter plot for this one because it could show how two continuous variables correlate with each other clearly. I also managed to put the three charts together so they could be compared more straightforwardly. It is shown that white prison population rate increase while total prison population increase, black prison population rate decrease while total prison population increase, and latinx prison population rate remain the same while total prison population increase. 
 
 ### Map
+
 
 ``````{r chart3, echo = FALSE, warning = FALSE, message = FALSE}
 jail_pop_data_state <- group_by(raw.data, county_name, year, total_jail_pop) %>% 
