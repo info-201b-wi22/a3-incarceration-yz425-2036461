@@ -55,7 +55,7 @@ five_states <- group_by(five_states, state, year) %>%
 library(ggplot2)
 ggplot(five_states) +
   geom_line(mapping = aes(x = year, y = total_pop, color = state))+
-  labs(title = "Total population of different states in different years", x = "Year", y = "Total Population")
+  labs(title = "Total population of different states from 1970 to 2018", x = "Year", y = "Total Population")
 ```
 
 
