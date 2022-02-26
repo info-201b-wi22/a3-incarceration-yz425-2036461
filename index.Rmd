@@ -4,20 +4,79 @@ output: html_document
 ---
 
 ### Introduction
-
 An introduction of the problem domain and a description of the variable(s) you are choosing to analyze (and why!)
+
+The incarceration rate in the U.S. has always been an important topic. The institution Vera Institute collected and presented a data set that provides some insights of the problem. Since the data set include multiple information like gender and race of the prisoners all over the U.S. from 1970 to 2018, the main problem domain I want to analyze in this data set is centered around the relationship between sates, population in jail, race and total population. The main questions I asked are how does the total population varies through year in different states, how does the rate of population in prison of different race correlates with the total population in prison, and what the jail population in each state is like in 2010?
+
+The main variables I chose to analyze are:
+
+1) Year: There are many trends with respect to the change of year. As we could see from the data set, almost numbers varies through year. So, year would be a really important elements when analyzing different trends in this data set.
+
+2) Total population: When analyzing the jail population in each states, it is also important to know the total population in each state so we could conclude if there's certain correlations between them.
+
+3) State: Since all the rows in the data set contains which state the data is from, state would be an important variable to study because we could conclude what the general data of each state is like and how they correlate.
+
+4) White prison rate: Since the data set contains multiple data about race, it would be important to know how the data varies between each race. Since white takes up a large proportion of population, it would be an important variable to study.
+
+5) Black prison rate: Since the data set contains multiple data about race, it would be important to know how the data varies between each race. Since black takes up a large proportion of population, it would be an important variable to study.
+
+6) Latinx prison rate: Since the data set contains multiple data about race, it would be important to know how the data varies between each race. Since latinx takes up a large proportion of population, it would be an important variable to study.
+
 
 ### Summary Information
 
 Write a summary paragraph of findings that includes the 5 values calculated from your summary information R script
 
-These will likely be calculated using your DPLYR skills, answering questions such as: 
-
-- What is the average value of my variable across all the counties (in the current year)?
-- Where is my variable the highest / lowest?
-- How much has my variable change over the last N years?
+These will likely be calculated using your DPLYR skills, answering questions such as:
 
 Feel free to calculate and report values that you find relevant. Again, remember that the purpose is to think about how these measure of incarceration vary by race.
+
+- What is the average value of total population across all the counties in 2002?
+- When is female population from 15 to 64 the highest in King County?
+- When is the male population from 15 to 64 the highest in King County?
+- Which county has the highest land area?
+- Which county has the highest total jail population in 2018?
+
+Feel free to calculate and report values that you find relevant. Again, remember that the purpose is to think about how these measure of incarceration vary by race.
+
+```{r include = FALSE, echo = FALSE, warning = FALSE, message = FALSE}
+library(dplyr)
+raw.data <- read.csv("https://raw.githubusercontent.com/vera-institute/incarceration-trends/master/incarceration_trends.csv")
+
+summary_info <- list()
+
+summary_info$avg_total_pop <- raw.data %>% 
+  filter(year == 2002) %>%
+  summarize(mean(total_pop))
+summary_info$avg_total_pop #The average of total population across all counties in 2002
+
+summary_info$King_highest_female_pop_yr <- raw.data %>% 
+  filter(fips == "53033") %>% 
+  filter(female_pop_15to64 == max(female_pop_15to64)) %>% 
+  pull(year)
+summary_info$King_highest_female_pop_yr #The year that King County, WA has the highest female population from 15 to 64
+
+summary_info$King_highest_male_pop_yr <- raw.data %>% 
+  filter(fips == "53033") %>% 
+  filter(male_pop_15to64 == max(male_pop_15to64)) %>% 
+  pull(year)
+summary_info$King_highest_male_pop_yr #The year that King County, WA has the highest male population from 15 to 64
+
+summary_info$Lowest_jail_pop_2018 <-raw.data %>% 
+  filter(year == 2018) %>% 
+  filter(total_jail_pop == min(total_jail_pop, na.rm = TRUE)) %>% 
+  pull(county_name)
+summary_info$Lowest_jail_pop_2018  #The county that has the largest land area
+
+summary_info$Highest_jail_pop_2018 <-raw.data %>% 
+  filter(year == 2018) %>% 
+  filter(total_jail_pop == max(total_jail_pop, na.rm = TRUE)) %>% 
+  pull(county_name)
+summary_info$Highest_jail_pop_2018 #The county that has the largest jail population in 2018
+```
+
+The data includes columns like total population, total female population, total male population, etc. There are five values that might be valuable in analyzing the data set. First, across all years and counties, the average value of the total populations across counties is  `r summary_info$avg_total_pop `. When, analyzing specifically King County, there are also some valuable numbers. In the year `r summary_info$King_highest_female_pop_yr`, King county has the highest number of female aged from 15 to 64. In the year `r summary_info$King_highest_male_pop_yr`, King county has the highest number of male aged from 15 to 64. In 2018, among all the counties, `r summary_info$Lowest_jail_pop_2018` are found to have the lowest jail population. Also, it is found that in 2018, `r summary_info$Highest_jail_pop_2018` has the highest jail population.
+
 
 ### The Dataset
 
@@ -26,9 +85,10 @@ How was the data collected or generated?
 Why was the data collected?  
 How many observations (rows) are in your data?  
 How many features (columns) are in the data?  
-What, if any, ethical questions or questions of power do you need to consider when working with this data?  
+What, if any, ethical questions or questions of power do you need to consider when working with this data?
 What are possible limitations or problems with this data?   (at least 200 words)
 
+The data was collected by the U.S. Department of Justice Bureau of Justice Statistics (BJS) and supplemented with data from state departments of correction. The data was collected by the NCRP, ASJ, COJ, and DCRP through recording the detailed individual-level data on admissions and releases from state prison authorities, including county of commitment. The data was collected because they want to have a detailed understanding of the prison related variables and use the data to generate a visualization. There are 153811 rows in total and 121 columns in total. The ethical question might be about data privacy. When dealing with the dataset, we should avoid analyzing the data by each row because that might reveal the information of certain prisoners. There are also multiple limitations in this data set. The first possible limitation is that since the data set combines data from different sources, their method of collecting data might be different, which might cause the datas to be in different format. If the data is not well analyzed and cleaned, the data set might contain inaccurate data. Also, the NAs in the data set make many rows not applicable, which will make it harder for people to compare in the data set.
 
 ### Trends Over Time Chart
 
@@ -42,12 +102,21 @@ The first chart that you will create and include will show the trend over time o
 - The chart needs a clear title 
 - You need a legend for your different line colors and a clear legend title
 
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
+``````{r chart1, echo = FALSE, warning = FALSE, message = FALSE}
+five_states <-summarize(group_by(raw.data, state, year, total_pop)) %>% 
+  filter(state == "WA" | state == "CA" | state == "TX" | state == "NY" | state == "MA")
 
-Here's an example of how to run an R script inside an RMarkdown file:
+five_states <- group_by(five_states, state, year) %>% 
+  summarize(total_pop = sum(total_pop, na.rm = TRUE))
 
-``````{r, echo = FALSE, code = readLines("chart1_example.R")}
+library(ggplot2)
+ggplot(five_states) +
+  geom_line(mapping = aes(x = year, y = total_pop, color = state))+
+  labs(title = "Total population of different states in different years", x = "Year", y = "Total Population")
 ```
+
+
+This chart shows how the total population of states like "CA", "MA", "NY", "TX", and "WA" varies from 1970 to 2018. These states are chosen since they are the states I traveled to on my first trip to the U.S. I used line chart for this one because it could show how the population varies through year and the comparison between each state clearly. Each line represents the change of total population in a state and has different colors to make it clearer. It's obvious that "CA", "TX", and "WA" show a clear pattern of increase in the total population, while the line of "NY" and "MA" are relatively flat, showing that the total population of those states does not increase much. The possible reason of this situation is that "NY" and "MA" has relatively large population base so there's not enough room for population increase, while other states are still developing and have relatively large potention for population to increase.
 
 ### Variable Comparison Chart
 
@@ -59,6 +128,33 @@ The second chart that you will create and include will show how two different (c
 - The chart needs a clear title 
 - If you choose to add a color encoding (not required), you need a legend for your different color and a clear legend title
 
+``````{r chart2, echo = FALSE, warning = FALSE, message = FALSE}
+jail_pop_data <- summarize(group_by(raw.data, county_name, year, white_prison_pop_rate, black_prison_pop_rate, latinx_prison_pop_rate, total_prison_pop)) %>% 
+  filter(year == 2015)
+
+jail_pop_data <- group_by(raw.data, county_name) %>% 
+  summarize (white_prison_pop_rate = sum (white_prison_pop_rate, na.rm = TRUE), black_prison_pop_rate = sum(black_prison_pop_rate, na.rm = TRUE), latinx_prison_pop_rate = sum(latinx_prison_pop_rate, na.rm = TRUE), total_prison_pop = sum (total_prison_pop, na.rm = TRUE))
+
+white_prison_rate <- ggplot(jail_pop_data)+
+  geom_point(mapping = aes(x = total_prison_pop, y = white_prison_pop_rate))+
+  labs(title = "Correlation between white prison population rate and total prison population", x = "total prison population ", y = "white prison rate")
+
+black_prison_rate <- ggplot(jail_pop_data)+
+  geom_point(mapping = aes(x = total_prison_pop, y = black_prison_pop_rate))+
+  labs(title = "Correlation between black prison population rate and total prison population", x = "total prison population ", y = "black prison rate")
+
+latinx_prison_rate <- ggplot(jail_pop_data)+
+  geom_point(mapping = aes(x = total_prison_pop, y = latinx_prison_pop_rate))+
+  labs(title = "Correlation between latinx prison population rate and total prison population", x = "total prison population ", y = "latinx prison rate")
+
+library(ggpubr)
+ggarrange(white_prison_rate, black_prison_rate, latinx_prison_rate + rremove("x.text"), 
+          ncol = 1, nrow = 3)
+```
+
+
+What I include in this graph is the correlation between white prison population rate and total prison population, black prison population rate and total prison population, and latinx prison population rate and total prison population in 2015. I used scatter plot for this one because it could show how two continuous variables correlate with each other clearly. I also managed to put the three charts together so they could be compared more straightforwardly. It is shown that white prison population rate increase while total prison population increase, black prison population rate decrease while total prison population increase, and latinx prison population rate remain the same while total prison population increase. 
+
 ### Map
 
 Include a chart. Make sure to describe why you included the chart, and what patterns emerged
@@ -69,3 +165,24 @@ The last chart that you will create and include will show how a variable is dist
 - Your color scale needs a legend with a clear label
 - Use a map based coordinate system to set the aspect ratio of your map
 - Use a minimalist theme for the map 
+
+``````{r chart3, echo = FALSE, warning = FALSE, message = FALSE}
+jail_pop_data_state <- group_by(raw.data, county_name, year, total_jail_pop) %>% 
+  filter(year == 2010)
+jail_pop_data_state <- group_by(raw.data,state) %>% 
+  summarize(total_jail_pop = sum(total_jail_pop, na.rm = TRUE))
+
+state_shape <- map_data('state')
+state_abbrevs <- data.frame(state.abb, state.name)
+jail_pop_data_state <- left_join(jail_pop_data_state, state_abbrevs, by=c('state'= 'state.abb'))
+jail_pop_data_state <- jail_pop_data_state %>%  mutate(region = tolower(state.name))
+state_shape <- left_join(state_shape, jail_pop_data_state)
+
+ggplot(state_shape)+
+  geom_polygon(mapping = aes(x = long, y = lat, group = group, fill = total_jail_pop)) +
+  scale_fill_continuous(low = 'white', high ='blue', labels = scales::label_number_si()) +
+  labs(title = "The total jail population in 2010 by states")
+```
+
+
+What I include in the chart is how the total jail population differs in each state in 2010. I used map for this one because it could compare the total prison population most clearly. I used the white to blue color scale because it could present the difference between each state obviously. It is obvious that "CA" has the largest total jail population in 2010, while the middle part of the US like "MT" and "WY" has the least total jail population in 2010. "WA" also has relatively small total jail population in 2010.
